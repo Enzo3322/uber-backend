@@ -45,7 +45,7 @@ export async function signup({
     if (!isDriver) {
       const createUserNotDrive = await connection.query(
         "insert into account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7)",
-        [id, name, email, cpf, carPlate, !!isPassenger, !isDriver]
+        [id, name, email, cpf, carPlate, !!isPassenger, isDriver]
       );
       return createUserNotDrive;
     }
