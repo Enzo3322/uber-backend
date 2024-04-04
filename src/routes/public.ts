@@ -3,7 +3,7 @@ import { getUsers, signup } from "../signup";
 
 const router = Router();
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   res.send("Hello World!");
 });
 
