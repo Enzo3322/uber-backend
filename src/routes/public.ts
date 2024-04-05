@@ -1,11 +1,8 @@
 import { Router } from "express";
-import { getUsers, signup } from "../signup";
+import { signup } from "../signup";
+import { getByAccountId, getAll } from "../user";
 
 const router = Router();
-
-router.get("/", async (req, res) => {
-  res.send("Hello World!");
-});
 
 router.post("/signup", async (req, res) => {
   try {
@@ -20,21 +17,30 @@ router.post("/signup", async (req, res) => {
       isDriver,
     });
 
-    res.json(account);
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ error: error });
+    res.status(201).json(account);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
   }
 });
 
 router.get("/users", async (req, res) => {
   try {
-    const users = await getUsers();
+    const users = await getAll();
 
-    res.json(users);
-  } catch (error) {
-    console.log(error);
-    res.status(400).json({ error: error });
+    res.status(200).json(users);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.get("/users/:accountId", async (req, res) => {
+  try {
+    const { accountId } = req.params;
+    const user = await getByAccountId(accountId);
+
+    res.status(200).json(user);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
   }
 });
 

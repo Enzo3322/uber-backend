@@ -1,6 +1,6 @@
 import crypto from "crypto";
-import { validateCpf } from "./validateCpf";
-import pgp from "pg-promise";
+import { validateCpf } from "./utils/validateCpf";
+import { connection } from "./config/db";
 
 interface IAccount {
   accountId?: string;
@@ -11,8 +11,6 @@ interface IAccount {
   isPassenger: boolean;
   isDriver: boolean;
 }
-
-const connection = pgp()("postgresql://postgres:postgres@localhost:5432/");
 
 async function checkUserAlreadyExists(email: string) {
   if (!email) throw new Error("Invalid email");
@@ -33,41 +31,44 @@ export async function signup({
   isPassenger,
   isDriver,
 }: IAccount) {
-  try {
-    await checkUserAlreadyExists(email);
-    const id = crypto.randomUUID();
-    const isValidName = name.match(/[a-zA-Z] [a-zA-Z]+/);
-    const cartPlateMatched = carPlate.match(/[A-Z]{3}[0-9]{4}/);
-    if (!isValidName) throw new Error("Invalid name");
-    if (!validateCpf(cpf)) throw new Error("Invalid CPF");
-    if (isDriver && cartPlateMatched)
-      throw new Error("Invalid car plate or driver status");
+  await checkUserAlreadyExists(email);
+  const id = crypto.randomUUID();
+  const isValidName = name.match(/[a-zA-Z] [a-zA-Z]+/);
+  const cartPlateMatched = carPlate.match(/[A-Z]{3}[0-9]{4}/);
+  if (!isValidName) throw new Error("Invalid name");
+  if (!validateCpf(cpf)) throw new Error("Invalid CPF");
+  if (isDriver && cartPlateMatched)
+    throw new Error("Invalid car plate or driver status");
 
-    if (!isDriver) {
-      const createUserNotDrive = await connection.query(
-        "insert into account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7)",
-        [id, name, email, cpf, carPlate, !!isPassenger, !!isDriver]
-      );
-      return createUserNotDrive;
-    }
-
-    const createNewUserDrive = await connection.query(
+  if (!isDriver) {
+    await connection.query(
       "insert into account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7)",
-      [id, name, email, cpf, carPlate, !!isPassenger, isDriver]
+      [id, name, email, cpf, carPlate, !!isPassenger, !!isDriver]
     );
-    return createNewUserDrive;
-  } catch (error) {
-    console.log(error);
-    throw new Error("Error creating account");
-  }
-}
 
-export async function getUsers() {
-  try {
-    const users = await connection.query("select * from account");
-    return users;
-  } catch (error) {
-    console.log(error);
-    throw new Error("Error getting users");
+    return {
+      account_id: id,
+      name,
+      email,
+      cpf,
+      car_plate: carPlate,
+      is_passenger: !!isPassenger,
+      is_driver: !!isDriver,
+    };
   }
+
+  await connection.query(
+    "insert into account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7)",
+    [id, name, email, cpf, carPlate, !!isPassenger, isDriver]
+  );
+
+  return {
+    account_id: id,
+    name,
+    email,
+    cpf,
+    car_plate: carPlate,
+    is_passenger: !!isPassenger,
+    is_driver: !!isDriver,
+  };
 }
