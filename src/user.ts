@@ -8,7 +8,6 @@ export async function getByAccountId(accountId: string) {
     );
     return user;
   } catch (error) {
-    console.log(error);
     throw new Error("Error getting user by account id");
   }
 }
@@ -18,7 +17,6 @@ export async function getAll() {
     const users = await connection.query("select * from account");
     return users;
   } catch (error) {
-    console.log(error);
     throw new Error("Error getting users");
   }
 }

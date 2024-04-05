@@ -46,8 +46,6 @@ export async function signup({
       [id, name, email, cpf, carPlate, !!isPassenger, !!isDriver]
     );
 
-    console.log({ passengerAccount });
-
     return passengerAccount;
   }
 
