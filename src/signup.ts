@@ -41,34 +41,20 @@ export async function signup({
     throw new Error("Invalid car plate or driver status");
 
   if (!isDriver) {
-    await connection.query(
-      "insert into account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7)",
+    const [passengerAccount] = await connection.query(
+      "insert into account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
       [id, name, email, cpf, carPlate, !!isPassenger, !!isDriver]
     );
 
-    return {
-      account_id: id,
-      name,
-      email,
-      cpf,
-      car_plate: carPlate,
-      is_passenger: !!isPassenger,
-      is_driver: !!isDriver,
-    };
+    console.log({ passengerAccount });
+
+    return passengerAccount;
   }
 
-  await connection.query(
-    "insert into account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7)",
+  const [driverAccount] = await connection.query(
+    "insert into account (account_id, name, email, cpf, car_plate, is_passenger, is_driver) values ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
     [id, name, email, cpf, carPlate, !!isPassenger, isDriver]
   );
 
-  return {
-    account_id: id,
-    name,
-    email,
-    cpf,
-    car_plate: carPlate,
-    is_passenger: !!isPassenger,
-    is_driver: !!isDriver,
-  };
+  return driverAccount;
 }
