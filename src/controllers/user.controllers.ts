@@ -1,12 +1,11 @@
 import { Request, Response } from "express";
-import { signup } from "../signup";
-import { getAll, getByAccountId } from "../user";
+import { getAll, getByAccountId, create } from "../user";
 
 export class UserController {
   public async signUp(req: Request, res: Response): Promise<void> {
     try {
       const { name, email, cpf, carPlate, isPassenger, isDriver } = req.body;
-      const user = await signup({
+      const user = await create({
         name,
         email,
         cpf,

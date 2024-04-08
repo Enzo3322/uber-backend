@@ -1,10 +1,11 @@
+import faker from "faker-br";
 import { jestE2E } from "./jest-e2e.config";
 
 test("Should create an account for the passenger", async function () {
   const input = {
-    name: "John Doe",
-    email: `john.doe${Math.random()}@gmail.com`,
-    cpf: "87748248800",
+    name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+    email: faker.internet.email(),
+    cpf: faker.br.cpf(),
     isPassenger: true,
     carPlate: "",
   };
@@ -14,9 +15,9 @@ test("Should create an account for the passenger", async function () {
 
 test("Should create an account for the driver", async function () {
   const input = {
-    name: "John Doe",
-    email: `john.doe${Math.random()}@gmail.com`,
-    cpf: "87748248800",
+    name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+    email: faker.internet.email(),
+    cpf: faker.br.cpf(),
     isPassenger: false,
     carPlate: "ABC123",
   };
@@ -26,9 +27,9 @@ test("Should create an account for the driver", async function () {
 
 test("Should return an array of users", async function () {
   const payload = {
-    name: "John Doe",
-    email: `john.doe${Math.random()}@gmail.com`,
-    cpf: "87748248800",
+    name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+    email: faker.internet.email(),
+    cpf: faker.br.cpf(),
     isPassenger: false,
     carPlate: "ABC123",
   };
@@ -41,9 +42,9 @@ test("Should return an array of users", async function () {
 
 test("Should return a user by accountId", async function () {
   const payload = {
-    name: "John Doe",
-    email: `john.doe${Math.random()}@gmail.com`,
-    cpf: "87748248800",
+    name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+    email: faker.internet.email(),
+    cpf: faker.br.cpf(),
     isPassenger: false,
     carPlate: "ABC123",
   };
