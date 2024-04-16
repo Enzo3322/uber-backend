@@ -15,13 +15,13 @@ test("Deve criar uma conta para o passageiro", async function () {
   };
   const responseSignup = await axios.post(
     "http://localhost:3000/signup",
-    input
+    input,
   );
   expect(responseSignup.status).toBe(200);
   const outputSignup = responseSignup.data;
   expect(outputSignup.accountId).toBeDefined();
   const responseGetAccount = await axios.get(
-    `http://localhost:3000/accounts/${outputSignup.accountId}`
+    `http://localhost:3000/accounts/${outputSignup.accountId}`,
   );
   const outputGetAccount = responseGetAccount.data;
   expect(outputGetAccount.name).toBe(input.name);
@@ -38,7 +38,7 @@ test("Não deve criar uma conta para o passageiro se o nome for inválido", asyn
   };
   const responseSignup = await axios.post(
     "http://localhost:3000/signup",
-    input
+    input,
   );
   expect(responseSignup.status).toBe(422);
   const outputSignup = responseSignup.data;

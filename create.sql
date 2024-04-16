@@ -10,15 +10,14 @@ create table account (
 
 create table ride (
 	ride_id uuid primary key,
-	passenger_id uuid not null,
+	passenger_id uuid,
 	driver_id uuid,
-	status text not null,
-	fare numeric not null,
-	distance numeric not null,
-	from_lat numeric not null,
-	from_long numeric not null,
-	to_lat numeric not null,
-	to_long numeric not null,
-	date timestamp not null
+	status text,
+	fare numeric,
+	distance numeric,
+	from_lat numeric,
+	from_long numeric,
+	to_lat numeric,
+	to_long numeric,
+	date timestamp
 );
-
